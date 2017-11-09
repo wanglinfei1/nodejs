@@ -4,7 +4,10 @@
 const express = require('express');
 const apiRouter = express.Router()
 const axios = require('axios')
-
+apiRouter.all('/*', function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", '*');
+  next();
+});
 apiRouter.get('/getList', function (req, res) {
   var url = 'https://c.y.qq.com/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg'
   axios.get(url, {
@@ -49,29 +52,17 @@ apiRouter.get('/getDiscList', function (req, res) {
     console.log(error)
   })
 });
-apiRouter.post('/getRankList', function (req, res) {
+apiRouter.get('/getRankList', function (req, res) {
   var url = 'https://c.y.qq.com/v8/fcg-bin/fcg_myqq_toplist.fcg'
-  for(var key in req.body){
-    var params = JSON.parse(key)
-  }
   axios.get(url, {
     headers: {
       "origin": "https://y.qq.com",
       "referer": "https://m.y.qq.com/",
     },
-    params: params
+    params: req.query
   }).then(response => {
     var ret = response.data
-    if (typeof ret === 'string') {
-      var reg = /^\w+\({[^()]+}\)$/
-      var matches = ret.match(reg)
-      if (matches) {
-        ret = JSON.parse(matches[1])
-        res.json(ret)
-      }
-    }else{
-      res.json(ret)
-    }
+    res.json(ret)
   }).catch(error => {
     console.log(error)
   })

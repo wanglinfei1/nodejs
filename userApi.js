@@ -6,6 +6,10 @@ const getDataId = require('./addMongodb')
 const path = require('path');
 
 //用户注册
+router.all('/*', function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", '*');
+  next();
+});
 router.post('/userApi/register', (req, res) => {
   if(!req.body.mobile){
     res.send({code:2011,data:null,msg:'手机号码错误'})

@@ -7,6 +7,10 @@ const express = require('express');
 const router = express.Router();
 const getDataId = require('./addMongodb')
 
+router.all('/*', function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", '*');
+  next();
+});
 router.get('/stockApi/stock/:id',(req,res) => {
   var stockId = req.params.id
   models.stock.find({id:stockId},(err,data) => {

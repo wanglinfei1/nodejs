@@ -10,29 +10,20 @@ const app = express();
 
 app.use(bodyParser.urlencoded({extended: false,"limit":"30000kb"}));
 app.use(bodyParser.json({ "limit":"30000kb"}));
-app.all('/*', function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", '*');
-  next();
-});
-app.use('/ng',express.static('./ng'));
-app.use(express.static('./vueMusic'));
 app.use('/api',userApi);
 app.use('/api',stockApi);
 app.use('/api',musicApi)
-
 const server = app.listen(8000, function () {
-    console.log('listen: http://localhost:8080');
+    console.log('listen: http://localhost:8000');
 });
 
 const subscriptions = [];
 
-const wsServer = new WebSocketServer({port:8082,verifyClient:scorkeVerify})
+const wsServer = new WebSocketServer({port:8002,verifyClient:scorkeVerify})
 
 function scorkeVerify(info){
   var origin = info.origin.match(/^(:?.+\:\/\/)([^\/]+)/);
-  if(origin.length>=3&&origin[2].indexOf('8080')!==-1){
-    return true;
-  }
+  return true;
 }
 
 wsServer.on('connection', (websocket,req) => {
